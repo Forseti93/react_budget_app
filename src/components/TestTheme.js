@@ -17,7 +17,7 @@ export const TestTheme = () => {
     >
       <span
         style={{
-          border: "2px solid red",
+          border: "2px solid #084298",
           borderRadius: "5px",
           padding: "0 5px",
         }}
@@ -28,7 +28,7 @@ export const TestTheme = () => {
           dispatch({ type: "toggleThemeMode" });
         }}
       >
-        Toggle night mode (repeat context API)
+        Toggle night mode (react context)
       </span>
     </div>
   );

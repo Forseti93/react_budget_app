@@ -1,5 +1,14 @@
 import React, { createContext, useReducer } from "react";
 
+export const ACTION_TYPES = [
+  "ADD_EXPENSE",
+  "CLEAR_EXPENSE",
+  "RED_EXPENSE",
+  "DELETE_EXPENSE",
+  "SET_BUDGET",
+  "CHG_CURRENCY",
+];
+
 // 1. Sets the initial state when the app loads
 const initialState = {
   budget: 200000,
@@ -52,7 +61,7 @@ export const AppProvider = (props) => {
 export const AppReducer = (state, action) => {
   let budget = 0;
   switch (action.type) {
-    case "ADD_EXPENSE":
+    case ACTION_TYPES[0]:
       let total_budget = 0;
       total_budget = state.expenses.reduce((previousExp, currentExp) => {
         return previousExp + currentExp.cost;
@@ -76,7 +85,7 @@ export const AppReducer = (state, action) => {
           ...state,
         };
       }
-    case "CLEAR_EXPENSE":
+    case ACTION_TYPES[1]:
       let newExpenses = [];
       state.expenses.map((expense) => {
         if (expense.name !== action.payload) newExpenses.push(expense);
@@ -85,7 +94,7 @@ export const AppReducer = (state, action) => {
         ...state,
         expenses: newExpenses,
       };
-    case "RED_EXPENSE":
+    case ACTION_TYPES[2]:
       const red_expenses = state.expenses.map((currentExp) => {
         if (
           currentExp.name === action.payload.name &&
@@ -101,7 +110,7 @@ export const AppReducer = (state, action) => {
         ...state,
         expenses: [...red_expenses],
       };
-    case "DELETE_EXPENSE":
+    case ACTION_TYPES[3]:
       action.type = "DONE";
       state.expenses.map((currentExp) => {
         if (currentExp.name === action.payload) {
@@ -115,14 +124,14 @@ export const AppReducer = (state, action) => {
         ...state,
         budget,
       };
-    case "SET_BUDGET":
+    case ACTION_TYPES[4]:
       action.type = "DONE";
       state.budget = action.payload;
 
       return {
         ...state,
       };
-    case "CHG_CURRENCY":
+    case ACTION_TYPES[5]:
       action.type = "DONE";
       state.currency = action.payload;
       return {
