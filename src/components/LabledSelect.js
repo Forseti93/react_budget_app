@@ -15,7 +15,7 @@ export const LabledSelect = (props) => {
           );
         });
       case "Action":
-        return ACTION_TYPES.map((action, ind) => {
+        return props.actions.map((action, ind) => {
           return (
             <option value={action} key={ind}>
               {action}

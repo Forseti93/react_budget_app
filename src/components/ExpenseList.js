@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from "../context/AppProvider";
 import { ThemeContext } from "../context/ThemeProvider";
+import { AddExpenceItem } from "./AddExpenceItem";
 import { ExpenseItem } from "./ExpenseItem";
 
 export const ExpenseList = () => {
@@ -53,6 +54,7 @@ export const ExpenseList = () => {
               />
             );
           })}
+          <AddExpenceItem/>
         </tbody>
       </table>
     </div>

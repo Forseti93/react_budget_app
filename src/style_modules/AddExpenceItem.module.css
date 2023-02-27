@@ -1,0 +1,11 @@
+.tableRow > td {
+  vertical-align: middle;
+}
+
+.tableRow > td:has(i) {
+  text-align: center;
+}
+
+.tableRow i {
+  font-variant: unicase;
+}

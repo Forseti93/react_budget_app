@@ -1,5 +1,6 @@
 import React, { createContext, useReducer } from "react";
 
+// actions to send on the dispatch
 export const ACTION_TYPES = [
   "ADD_EXPENSE",
   "CLEAR_EXPENSE",
@@ -9,18 +10,21 @@ export const ACTION_TYPES = [
   "CHG_CURRENCY",
 ];
 
+// actions to display for a user
+export const actions = [
+  "add monthly budget",
+  "minus monthly budget",
+  "clear monthly budget",
+  "set monthly budget",
+];
+
 // 1. Sets the initial state when the app loads
 const initialState = {
-  budget: 200000,
+  budget: 25000,
   expenses: [
     { id: "Gas", name: "Gas", cost: 1700 },
     { id: "Electricity", name: "Electricity", cost: 300 },
     { id: "Water", name: "Water", cost: 400 },
-    { id: "Apartment", name: "Apartment", cost: 200 },
-    { id: "Phones + Internet", name: "Phones + Internet", cost: 500 },
-    { id: "Bus", name: "Bus", cost: 600 },
-    { id: "Meal", name: "Meal", cost: 8000 },
-    { id: "For a rest", name: "For a rest", cost: 4000 },
   ],
   currency: "£",
 };

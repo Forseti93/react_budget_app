@@ -8,7 +8,8 @@ export const LabledInput = (props) => {
         {props.label}
       </span>
       <input
-        type="text"
+        disabled={props.disabled}
+        type="number"
         className="form-control"
         placeholder="type a number"
         aria-label="Username"

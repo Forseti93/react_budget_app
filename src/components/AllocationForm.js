@@ -1,15 +1,13 @@
 import React, { useContext, useState } from "react";
 import { LabledSelect } from "./LabledSelect";
-import { AppContext } from "../context/AppProvider";
+import { AppContext, actions, ACTION_TYPES } from "../context/AppProvider";
 import { LabledInput } from "./LabledInput";
 
 const AllocationForm = () => {
   const { expenses, dispatch } = useContext(AppContext);
-
-  const [item, setItem] = useState(expenses[0]);
-  const [action, setAction] = useState("ADD_EXPENSE");
+  const [item, setItem] = useState(expenses[0].name);
+  const [action, setAction] = useState(actions[0]);
   const [number, setNumber] = useState(0);
-  console.log("item: ", item, "action: ", action, "number: ", number);
 
   //   to pass special change handlers
   const handleChange = (event, label) => {
@@ -26,24 +24,81 @@ const AllocationForm = () => {
     }
   };
 
+  // to update state, depending on select elements
+  const submitHandler = () => {
+    const data = {
+      name: item,
+      cost: +number,
+    };
+    switch (action) {
+      case "add monthly budget":
+        dispatch({
+          type: "ADD_EXPENSE",
+          payload: data,
+        });
+        break;
+      case "minus monthly budget":
+        dispatch({
+          type: "ADD_EXPENSE",
+          payload: { ...data, cost: -data.cost },
+        });
+        break;
+      case "add monthly budget":
+        dispatch({
+          type: "ADD_EXPENSE",
+          payload: data.name,
+        });
+        break;
+      case "clear monthly budget":
+        dispatch({
+          type: "DELETE_EXPENSE",
+          payload: data.name,
+        });
+        break;
+      case "set monthly budget":
+        dispatch({
+          type: "DELETE_EXPENSE",
+          payload: data.name,
+        });
+        dispatch({
+          type: "ADD_EXPENSE",
+          payload: data,
+        });
+        break;
+    }
+  };
+
   return (
     <div>
-      <h1 className="mt-3">*move to bottom Change Allocation</h1>
-      <div className="container">
+      <h3 className="mt-3">Change Allocation</h3>
+      <div className="container mt-3">
         <div className="row">
-          <div className="col-sm">
+          <div className="col-md mt-2">
             <LabledSelect label={"Item"} handleChange={handleChange} />
           </div>
-          <div className="col-sm">
-            <LabledSelect label={"Action"} handleChange={handleChange} />
+          <div className="col-md mt-2">
+            <LabledSelect
+              label={"Action"}
+              actions={actions}
+              handleChange={handleChange}
+            />
           </div>
-          <div className="col-sm">
-            <LabledInput label={"Number"} handleChange={handleChange} />
+
+          <div className="col-md mt-2">
+            <LabledInput
+              label={"Number"}
+              disabled={action === "clear monthly budget"}
+              handleChange={handleChange}
+            />
           </div>
         </div>
       </div>
       <div className="container text-center ">
-        <button type="button" className="w-100 mt-3 btn btn-primary">
+        <button
+          onClick={submitHandler}
+          type="button"
+          className="mt-3 w-100 btn btn-primary"
+        >
           Update
         </button>
       </div>
