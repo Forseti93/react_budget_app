@@ -1,4 +1,5 @@
 import React, { createContext, useReducer } from "react";
+import { nanoid } from "nanoid";
 
 // actions to send on the dispatch
 export const ACTION_TYPES = [
@@ -8,6 +9,8 @@ export const ACTION_TYPES = [
   "DELETE_EXPENSE",
   "SET_BUDGET",
   "CHG_CURRENCY",
+  "ADD_NEW_EXPENSE",
+  "TOGGLE_REMAINING_LOW",
 ];
 
 // actions to display for a user
@@ -22,11 +25,12 @@ export const actions = [
 const initialState = {
   budget: 25000,
   expenses: [
-    { id: "Gas", name: "Gas", cost: 1700 },
-    { id: "Electricity", name: "Electricity", cost: 300 },
-    { id: "Water", name: "Water", cost: 400 },
+    { id: nanoid(), name: "Gas", cost: 1700 },
+    { id: nanoid(), name: "Electricity", cost: 300 },
+    { id: nanoid(), name: "Water", cost: 400 },
   ],
   currency: "£",
+  remainingLow: false,
 };
 
 // 2. Creates the context this is the thing our components import and use to get the state
@@ -49,11 +53,9 @@ export const AppProvider = (props) => {
   return (
     <AppContext.Provider
       value={{
-        expenses: state.expenses,
-        budget: state.budget,
+        ...state,
         remaining: remaining,
         dispatch,
-        currency: state.currency,
       }}
     >
       {props.children}
@@ -66,12 +68,13 @@ export const AppReducer = (state, action) => {
   let budget = 0;
   switch (action.type) {
     case ACTION_TYPES[0]:
+      // "ADD_EXPENSE"
       let total_budget = 0;
       total_budget = state.expenses.reduce((previousExp, currentExp) => {
         return previousExp + currentExp.cost;
       }, 0);
       total_budget = total_budget + action.payload.cost;
-      action.type = "DONE";
+      // action.type = "DONE";
       if (total_budget <= state.budget) {
         total_budget = 0;
         state.expenses.map((currentExp) => {
@@ -90,15 +93,16 @@ export const AppReducer = (state, action) => {
         };
       }
     case ACTION_TYPES[1]:
-      let newExpenses = [];
-      state.expenses.map((expense) => {
-        if (expense.name !== action.payload) newExpenses.push(expense);
-      });
+      // "CLEAR_EXPENSE"
+      const newExpenses = state.expenses.filter(
+        (expense) => expense.name !== action.payload
+      );
       return {
         ...state,
         expenses: newExpenses,
       };
     case ACTION_TYPES[2]:
+      // "RED_EXPENSE"
       const red_expenses = state.expenses.map((currentExp) => {
         if (
           currentExp.name === action.payload.name &&
@@ -109,13 +113,14 @@ export const AppReducer = (state, action) => {
         }
         return currentExp;
       });
-      action.type = "DONE";
+      // action.type = "DONE";
       return {
         ...state,
         expenses: [...red_expenses],
       };
     case ACTION_TYPES[3]:
-      action.type = "DONE";
+      // "DELETE_EXPENSE"
+      // action.type = "DONE";
       state.expenses.map((currentExp) => {
         if (currentExp.name === action.payload) {
           budget = state.budget + currentExp.cost;
@@ -123,21 +128,42 @@ export const AppReducer = (state, action) => {
         }
         return currentExp;
       });
-      action.type = "DONE";
+      // action.type = "DONE";
       return {
         ...state,
         budget,
       };
     case ACTION_TYPES[4]:
-      action.type = "DONE";
+      // "SET_BUDGET"
+      // action.type = "DONE";
       state.budget = action.payload;
 
       return {
         ...state,
       };
     case ACTION_TYPES[5]:
-      action.type = "DONE";
+      // "CHG_CURRENCY"
+      // action.type = "DONE";
       state.currency = action.payload;
+      return {
+        ...state,
+      };
+    case ACTION_TYPES[6]:
+      // "ADD_NEW_EXPENSE"
+      // action.type = "DONE";
+      state.expenses = [...state.expenses, action.payload];
+      state.remaining =
+        state.budget -
+        state.expenses.reduce((budget, expense) => {
+          return budget - +expense;
+        }, state.budget);
+      return {
+        ...state,
+      };
+    case ACTION_TYPES[7]:
+      // "TOGGLE_REMAINING_LOW"
+      // action.type = "DONE";
+      state.remainingLow = action.payload;
       return {
         ...state,
       };

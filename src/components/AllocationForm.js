@@ -4,22 +4,56 @@ import { AppContext, actions, ACTION_TYPES } from "../context/AppProvider";
 import { LabledInput } from "./LabledInput";
 
 const AllocationForm = () => {
-  const { expenses, dispatch } = useContext(AppContext);
+  const { expenses, dispatch, budget, remainingLow } = useContext(AppContext);
   const [item, setItem] = useState(expenses[0].name);
   const [action, setAction] = useState(actions[0]);
-  const [number, setNumber] = useState(0);
+  const [number, setNumber] = useState("");
+
+  // to toggle class name on error
+  const handleErrorVisualization = (errorToShowMS) => {
+    dispatch({
+      type: "TOGGLE_REMAINING_LOW",
+      payload: true,
+    });
+
+    setTimeout(() => {
+      dispatch({
+        type: "TOGGLE_REMAINING_LOW",
+        payload: false,
+      });
+    }, errorToShowMS);
+  };
+
+  // to check, does the new expense has appropriate cost
+  const expenseCostAppropriate = (cost) => {
+    const allExpenses = expenses.reduce((sum, val) => {
+      return sum + +val.cost;
+    }, 0);
+    return +budget - +allExpenses - +cost >= 0 ? true : false;
+  };
 
   //   to pass special change handlers
   const handleChange = (event, label) => {
+    const value = event.target.value;
     switch (label) {
       case "Item":
-        setItem(event.target.value);
+        setItem(value);
         break;
       case "Action":
-        setAction(event.target.value);
+        setAction(value);
         break;
       case "Number":
-        setNumber(event.target.value);
+        if (expenseCostAppropriate(value)) {
+          setNumber(value);
+        } else {
+          dispatch({
+            type: "TOGGLE_REMAINING_LOW",
+            payload: true,
+          });
+
+          // handleErrorVisualization(3000);
+          setNumber((prev) => prev);
+        }
         break;
     }
   };
@@ -74,10 +108,15 @@ const AllocationForm = () => {
       <div className="container mt-3">
         <div className="row">
           <div className="col-md mt-2">
-            <LabledSelect label={"Item"} handleChange={handleChange} />
+            <LabledSelect
+              value={item}
+              label={"Item"}
+              handleChange={handleChange}
+            />
           </div>
           <div className="col-md mt-2">
             <LabledSelect
+              value={action}
               label={"Action"}
               actions={actions}
               handleChange={handleChange}
@@ -86,6 +125,7 @@ const AllocationForm = () => {
 
           <div className="col-md mt-2">
             <LabledInput
+              value={number}
               label={"Number"}
               disabled={action === "clear monthly budget"}
               handleChange={handleChange}

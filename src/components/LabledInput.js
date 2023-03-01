@@ -8,6 +8,7 @@ export const LabledInput = (props) => {
         {props.label}
       </span>
       <input
+        value={props.value}
         disabled={props.disabled}
         type="number"
         className="form-control"

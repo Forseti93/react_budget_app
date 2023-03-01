@@ -4,7 +4,7 @@ import { AppContext } from "../context/AppProvider";
 export const ExpenseTotal = ({className}) => {
   const { expenses } = useContext(AppContext);
   const allExpenses = expenses.reduce((acc, val) => {
-    return acc + val.cost;
+    return acc + +val.cost;
   }, 0);
 
   return (

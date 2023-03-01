@@ -41,7 +41,7 @@ export const ExpenseList = () => {
           </tr>
         </thead>
         <tbody>
-          {expenses.map((el, ind) => {
+          {expenses.map((el) => {
             // {id: "Marketing", name: "Marketing", cost: 50 }
             const { name, cost, id } = el;
             return (

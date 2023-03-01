@@ -30,11 +30,9 @@ export const ThemeContextProvider = (props) => {
 };
 
 export const ThemeReducer = (state, action) => {
-  console.log("theme dispatch");
   switch (action.type) {
     case "toggleThemeMode":
       if (state.nightMode) {
-        console.log("dispatcher changed state to day");
         return {
           ...state,
           nightMode: false,
@@ -42,7 +40,6 @@ export const ThemeReducer = (state, action) => {
           color: (state.color = "black"),
         };
       } else {
-        console.log("dispatcher changed state to night");
         return {
           ...state,
           nightMode: true,
